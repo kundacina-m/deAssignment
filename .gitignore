@@ -1,0 +1,6 @@
+.DS_STORE
+.idea/
+!.idea/sbt.xml
+out/
+project/target
+target/
