@@ -67,29 +67,31 @@ object News {
           article.source.name), keyword)
       )
 
+    spark.sql("CREATE SCHEMA IF NOT EXISTS htec")
+
     if (tableAlreadyExists(tableName, spark)) {
 
-      val mergedDF = fromApiDataset.toDF().unionByName(spark.read.table(s"htec_contractors.$tableName"))
+      val mergedDF = fromApiDataset.toDF().unionByName(spark.read.table(s"htec.$tableName"))
       val finalDF = mergedDF.distinct()
 
       spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
-      finalDF.write.partitionBy("publishedDate").mode(SaveMode.Overwrite).saveAsTable("htec_contractors.playground_temp")
+      finalDF.write.partitionBy("publishedDate").mode(SaveMode.Overwrite).saveAsTable("htec.playground_temp")
 
-      val tempDF = spark.read.table("htec_contractors.playground_temp")
+      val tempDF = spark.read.table("htec.playground_temp")
 
-      tempDF.write.mode(SaveMode.Overwrite).insertInto(s"htec_contractors.$tableName")
-      spark.sql("DROP table htec_contractors.playground_temp")
+      tempDF.write.mode(SaveMode.Overwrite).insertInto(s"htec.$tableName")
+      spark.sql("DROP table htec.playground_temp")
 
     } else {
 
-      fromApiDataset.write.partitionBy("publishedDate").mode(SaveMode.Overwrite).saveAsTable(s"htec_contractors.$tableName")
+      fromApiDataset.write.partitionBy("publishedDate").mode(SaveMode.Overwrite).saveAsTable(s"htec.$tableName")
     }
 
     System.exit(0)
   }
 
   def tableAlreadyExists(tableName: String, sparkSession: SparkSession): Boolean = {
-    sparkSession.catalog.tableExists(s"htec_contractors.$tableName")
+    sparkSession.catalog.tableExists(s"htec.$tableName")
   }
 
   def checkIfNotNullAndContains(array: Array[String], keyword: String): Boolean = {

@@ -12,6 +12,10 @@ It can be done from root via `script.sh` <br />
 i.e.
 ```./script.sh "2020-09-08" "endBitcoin" "end"```
 
+You might need to make script executable depending on environment by <br />
+`chmod +x script.sh`
+
+
 or you can switch to `target/scala-2.12/` and run <br />
 ```./spark-submit playground_2.12-0.1.jar "yyyy-MM-dd" "tableName" "keyword"``` <br />
 i.e. <br />
